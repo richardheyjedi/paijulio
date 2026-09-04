@@ -1,0 +1,11 @@
+node_modules/
+dist/
+qa/
+.vercel/
+*.log
+.DS_Store
+
+# Arquivos-fonte mantidos fora do site; as versões usadas ficam em public/assets.
+/header pai julio.jpg
+/pai julio 02.jpg
+/pai julio completo.png
