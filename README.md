@@ -9,6 +9,14 @@ npm install
 npm run dev
 ```
 
-## Configuração necessária
+## WhatsApp configurado
 
-Antes de publicar, substitua o número da constante `WHATSAPP_URL` em `src/main.jsx` pelo número real, no formato `55DDDNUMERO`.
+Os botões utilizam o número `+55 85 8738-2458`, centralizado nas constantes de contato em `src/main.jsx`.
+
+## Páginas para sitelinks
+
+- `/consulta-espiritual/`
+- `/sobre-pai-julio/`
+- `/trabalhos-espirituais/`
+- `/depoimentos/`
+- `/perguntas-frequentes/`
