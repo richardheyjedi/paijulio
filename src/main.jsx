@@ -4,7 +4,8 @@ import './styles.css';
 
 const WHATSAPP_NUMBER = '558587382458';
 const WHATSAPP_DISPLAY = '+55 85 8738-2458';
-const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=Olá%20Pai%20Júlio%2C%20quero%20agendar%20uma%20consulta.`;
+const WHATSAPP_MESSAGE = 'Olá Pai Júlio, entendi que a consulta é 100% online e paga. Gostaria de consultar os valores e horários.';
+const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
 const Icon = ({ name, size = 22 }) => {
   const paths = {
@@ -28,7 +29,7 @@ const Icon = ({ name, size = 22 }) => {
 const CTA = ({ children = 'Agendar minha consulta', className = '', icon = true }) => (
   <a className={`button ${className}`} href={WHATSAPP_URL} target="_blank" rel="noreferrer">
     {icon && <Icon name="message" size={19} />}
-    <span className="button-copy"><strong>{children}</strong><small>Atendimento particular • serviço pago</small></span>
+    <span className="button-copy"><strong>{children}</strong><small>100% online • atendimento pago</small></span>
     <Icon name="arrow" size={18} />
   </a>
 );
@@ -75,7 +76,7 @@ const testimonialVideos = [
 ];
 
 const sitelinkPages = {
-  '/consulta-espiritual/': { type: 'consulta', kicker: 'Consulta espiritual', title: 'Um atendimento reservado para compreender seu momento.', lead: 'Converse com Pai Júlio com privacidade, explique o que está vivendo e receba uma orientação individual, online ou presencial.' },
+  '/consulta-espiritual/': { type: 'consulta', kicker: 'Consulta espiritual', title: 'Um atendimento reservado para compreender seu momento.', lead: 'Converse com Pai Júlio com privacidade e receba uma orientação individual, 100% online, particular e paga.' },
   '/sobre-pai-julio/': { type: 'sobre', kicker: 'Conheça Pai Júlio', title: 'Experiência espiritual com escuta, respeito e verdade.', lead: 'Uma trajetória dedicada a acolher pessoas e famílias que procuram mais clareza, equilíbrio e direcionamento.' },
   '/trabalhos-espirituais/': { type: 'trabalhos', kicker: 'Trabalhos espirituais', title: 'Orientação para diferentes momentos da sua vida.', lead: 'Conheça os atendimentos disponíveis e encontre o caminho mais adequado para conversar sobre a sua situação.' },
   '/depoimentos/': { type: 'depoimentos', kicker: 'Experiências compartilhadas', title: 'Conheça relatos sobre o atendimento.', lead: 'Assista aos depoimentos em vídeo e veja comentários sobre acolhimento, clareza e discrição durante as consultas.' },
@@ -124,7 +125,7 @@ function SitelinkPage({ page }) {
             <span className="service-tag">{service.tag}</span>{service.featured && <span className="service-highlight">Mais procurado</span>}
             <div className="service-media-title"><span className="service-icon"><Icon name={service.icon}/></span><span className="service-number">0{i + 1}</span></div>
           </div>
-          <div className="service-body"><h3>{service.title}</h3><p>{service.text}</p><ul>{service.benefits.map((benefit) => <li key={benefit}><Icon name="check" size={14}/>{benefit}</li>)}</ul><a href={WHATSAPP_URL} target="_blank" rel="noreferrer"><span><strong>Consultar disponibilidade</strong><small>Atendimento particular • serviço pago</small></span><Icon name="arrow" size={17}/></a></div>
+          <div className="service-body"><h3>{service.title}</h3><p>{service.text}</p><ul>{service.benefits.map((benefit) => <li key={benefit}><Icon name="check" size={14}/>{benefit}</li>)}</ul><a href={WHATSAPP_URL} target="_blank" rel="noreferrer"><span><strong>Consultar disponibilidade</strong><small>100% online • atendimento pago</small></span><Icon name="arrow" size={17}/></a></div>
         </article>
       ))}
     </div>
@@ -138,7 +139,7 @@ function SitelinkPage({ page }) {
           <div className="container subpage-hero-content"><span className="eyebrow"><span></span>{page.kicker}</span><h1>{page.title}</h1><p>{page.lead}</p><CTA>Falar com Pai Júlio</CTA><div className="subpage-paid"><Icon name="lock" size={15}/> Atendimento particular e pago. Valores informados antes de agendar.</div></div>
         </section>
 
-        {page.type === 'consulta' && <section className="subpage-section section"><div className="container"><div className="section-heading"><span className="kicker">Como funciona</span><h2>Uma conversa simples, individual e confidencial.</h2><p>Você recebe todas as informações com antecedência e só agenda depois de esclarecer suas dúvidas.</p></div><div className="subpage-feature-grid"><article><Icon name="message"/><h3>Primeiro contato</h3><p>Envie uma mensagem e conte brevemente o que está acontecendo.</p></article><article><Icon name="clock"/><h3>Horário combinado</h3><p>Escolha entre atendimento online ou presencial, conforme disponibilidade.</p></article><article><Icon name="compass"/><h3>Orientação individual</h3><p>Converse com privacidade e receba um direcionamento explicado com clareza.</p></article></div><div className="subpage-info-panel"><div><span className="kicker">O que você encontra</span><h2>Acolhimento sem julgamentos.</h2><ul className="check-list"><li><span><Icon name="check" size={17}/></span>Sigilo e respeito à sua história</li><li><span><Icon name="check" size={17}/></span>Atendimento personalizado</li><li><span><Icon name="check" size={17}/></span>Explicação transparente dos próximos passos</li></ul></div><aside><Icon name="lock" size={28}/><strong>Consulta particular</strong><p>Este não é um serviço gratuito. Valores e condições são informados diretamente pelo WhatsApp.</p><CTA>Consultar valores</CTA></aside></div></div></section>}
+        {page.type === 'consulta' && <section className="subpage-section section"><div className="container"><div className="section-heading"><span className="kicker">Como funciona</span><h2>Uma conversa simples, individual e confidencial.</h2><p>Você recebe todas as informações com antecedência e só agenda depois de esclarecer suas dúvidas.</p></div><div className="subpage-feature-grid"><article><Icon name="message"/><h3>Primeiro contato</h3><p>Envie uma mensagem e conte brevemente o que está acontecendo.</p></article><article><Icon name="clock"/><h3>Horário combinado</h3><p>Escolha o melhor horário para seu atendimento 100% online.</p></article><article><Icon name="compass"/><h3>Orientação individual</h3><p>Converse com privacidade e receba um direcionamento explicado com clareza.</p></article></div><div className="subpage-info-panel"><div><span className="kicker">O que você encontra</span><h2>Acolhimento sem julgamentos.</h2><ul className="check-list"><li><span><Icon name="check" size={17}/></span>Sigilo e respeito à sua história</li><li><span><Icon name="check" size={17}/></span>Atendimento personalizado</li><li><span><Icon name="check" size={17}/></span>Explicação transparente dos próximos passos</li></ul></div><aside><Icon name="lock" size={28}/><strong>Consulta particular</strong><p>Este não é um serviço gratuito. O atendimento é online e os valores são informados antes do agendamento.</p><CTA>Consultar valores</CTA></aside></div></div></section>}
 
         {page.type === 'sobre' && <section className="subpage-section section"><div className="container about-grid"><div className="about-visual"><img src="/assets/pai-julio-sobre.webp" srcSet="/assets/pai-julio-sobre-mobile.webp 700w, /assets/pai-julio-sobre.webp 1000w" sizes="(max-width: 720px) calc(100vw - 28px), 55vw" width="1000" height="488" alt="Pai Júlio durante uma cerimônia espiritual"/><div className="experience-card"><strong>30+</strong><span>anos de experiência<br/>e dedicação espiritual</span></div></div><div className="about-copy"><span className="kicker">Uma trajetória de dedicação</span><h2>Escuta, respeito e orientação para cada história.</h2><p>Pai Júlio acolhe pessoas que procuram respostas, proteção e equilíbrio para momentos delicados da vida.</p><p>Cada atendimento considera a história e o momento de quem chega, sem fórmulas prontas e com respeito à fé de cada pessoa.</p><ul className="check-list"><li><span><Icon name="check" size={17}/></span>Conversa reservada e confidencial</li><li><span><Icon name="check" size={17}/></span>Orientação explicada com clareza</li><li><span><Icon name="check" size={17}/></span>Atendimento para todo o Brasil</li></ul><CTA>Agendar uma conversa</CTA></div></div></section>}
 
@@ -148,7 +149,7 @@ function SitelinkPage({ page }) {
 
         {page.type === 'faq' && <section className="faq subpage-section section"><div className="container faq-grid"><div className="faq-intro"><span className="kicker">Informação transparente</span><h2>Suas principais dúvidas, respondidas.</h2><p>Não encontrou sua pergunta? Fale diretamente pelo WhatsApp antes de agendar.</p><CTA className="button-outline">Fazer uma pergunta</CTA></div><div className="faq-list">{faqs.map(([question, answer], i) => <div className={`faq-item ${openFaq === i ? 'active' : ''}`} key={question}><button onClick={() => setOpenFaq(openFaq === i ? -1 : i)} aria-expanded={openFaq === i}><span>{question}</span><b>{openFaq === i ? '−' : '+'}</b></button><div className="faq-answer"><p>{answer}</p></div></div>)}</div></div></section>}
 
-        <section className="subpage-final"><div className="container"><span className="kicker">Atendimento online e presencial</span><h2>Pronto para dar o próximo passo?</h2><p>Fale pelo WhatsApp, tire suas dúvidas e receba valores e condições antes de agendar.</p><CTA>Conversar pelo WhatsApp</CTA></div></section>
+        <section className="subpage-final"><div className="container"><span className="kicker">Atendimento 100% online e pago</span><h2>Pronto para dar o próximo passo?</h2><p>Fale pelo WhatsApp, tire suas dúvidas e receba valores e condições antes de agendar.</p><CTA>Conversar pelo WhatsApp</CTA></div></section>
       </main>
       <SubpageFooter/>
       <a className="whatsapp-float" href={WHATSAPP_URL} target="_blank" rel="noreferrer"><span className="whatsapp-icon"><Icon name="whatsapp" size={29}/></span><span className="whatsapp-copy"><strong>Fale no WhatsApp</strong><small>{WHATSAPP_DISPLAY} • serviço pago</small></span></a>
@@ -212,7 +213,7 @@ function App() {
           <div className="hero-bg" aria-hidden="true"></div>
           <div className="hero-content container">
             <div className="hero-copy">
-              <div className="eyebrow"><span></span> Atendimento online e presencial</div>
+              <div className="eyebrow"><span></span> Atendimento 100% online</div>
               <h1>Encontre <em>clareza</em> para seguir em frente</h1>
               <p className="hero-lead">Orientação espiritual acolhedora para quem vive dúvidas no amor, conflitos pessoais ou sente que precisa reencontrar o próprio caminho.</p>
               <div className="hero-actions">
@@ -234,7 +235,7 @@ function App() {
         <section className="trust-bar" aria-label="Diferenciais">
           <div className="container trust-grid">
             <div><Icon name="shield"/><span><strong>Sigilo absoluto</strong><small>Sua história protegida</small></span></div>
-            <div><Icon name="clock"/><span><strong>Horário flexível</strong><small>Online ou presencial</small></span></div>
+            <div><Icon name="clock"/><span><strong>Horário flexível</strong><small>Atendimento 100% online</small></span></div>
             <div><Icon name="heart"/><span><strong>Acolhimento real</strong><small>Escuta sem julgamentos</small></span></div>
             <div><Icon name="compass"/><span><strong>Orientação clara</strong><small>Direcionamento pessoal</small></span></div>
           </div>
@@ -300,7 +301,7 @@ function App() {
                     <p>{service.text}</p>
                     <ul>{service.benefits.map((benefit) => <li key={benefit}><Icon name="check" size={14}/>{benefit}</li>)}</ul>
                     <a href={WHATSAPP_URL} target="_blank" rel="noreferrer">
-                      <span><strong>Consultar disponibilidade</strong><small>Atendimento particular • serviço pago</small></span><Icon name="arrow" size={17}/>
+                      <span><strong>Consultar disponibilidade</strong><small>100% online • atendimento pago</small></span><Icon name="arrow" size={17}/>
                     </a>
                   </div>
                 </article>
@@ -319,7 +320,7 @@ function App() {
             </div>
             <div className="steps-grid">
               <article><span className="step-index" aria-hidden="true">01</span><Icon name="message" size={28}/><h3>Envie uma mensagem</h3><p>Conte, no seu tempo, o que você está vivendo e o tipo de orientação que busca.</p></article>
-              <article><span className="step-index" aria-hidden="true">02</span><Icon name="clock" size={28}/><h3>Escolha o horário</h3><p>Combine um horário para atendimento online ou presencial, conforme disponibilidade.</p></article>
+              <article><span className="step-index" aria-hidden="true">02</span><Icon name="clock" size={28}/><h3>Escolha o horário</h3><p>Combine um horário para seu atendimento 100% online.</p></article>
               <article><span className="step-index" aria-hidden="true">03</span><Icon name="compass" size={28}/><h3>Receba orientação</h3><p>Tenha uma conversa individual para compreender seu momento e enxergar possibilidades.</p></article>
             </div>
             <div className="center"><CTA>Dar o primeiro passo</CTA><small>Você receberá todas as informações antes de agendar.</small></div>
