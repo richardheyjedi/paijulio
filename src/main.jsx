@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 
@@ -43,6 +43,8 @@ const services = [
   { icon: 'compass', tag: 'Direcionamento', title: 'Jogo de búzios', text: 'Leitura espiritual para trazer clareza sobre decisões, ciclos e possibilidades do seu caminho.', benefits: ['Consulta individual', 'Respostas com clareza'], image: '/assets/pai-julio-hero.webp', position: '62% 45%' },
 ];
 
+const homeServices = services.slice(0, 4);
+
 const faqs = [
   ['Como funciona a consulta espiritual?', 'O atendimento começa com uma conversa reservada para compreender o seu momento. A partir daí, Pai Júlio realiza a orientação espiritual de forma personalizada e explica os próximos passos com clareza.'],
   ['A consulta pode ser feita online?', 'Sim. O atendimento online permite receber a orientação com privacidade, de onde você estiver. O formato é combinado no momento do agendamento.'],
@@ -51,29 +53,40 @@ const faqs = [
   ['Como faço para agendar?', 'Clique em qualquer botão de WhatsApp da página, envie sua mensagem e combine o melhor horário diretamente com a equipe.'],
 ];
 
-const activityNotifications = [
-  { name: 'Bruno', message: 'acabou de realizar uma consulta', time: 'há 2 minutos' },
-  { name: 'Maria', message: 'acabou de voltar com seu amor', time: 'há 4 minutos' },
-  { name: 'Juliana', message: 'recebeu uma orientação espiritual', time: 'há 7 minutos' },
-  { name: 'Rafael', message: 'iniciou um atendimento online', time: 'há 9 minutos' },
-  { name: 'Camila', message: 'solicitou informações pelo WhatsApp', time: 'há 12 minutos' },
-];
-
-const testimonialComments = [
-  { name: 'Marlene Silva', initials: 'MS', color: '#754737', time: '2 sem', likes: 18, text: 'Cheguei muito nervosa e sem saber o que fazer. Pai Júlio me ouviu com muita calma e explicou tudo de um jeito que consegui entender. Saí bem mais tranquila da consulta.', reply: 'Obrigado pela confiança, Marlene. Que você siga seu caminho com serenidade.' },
-  { name: 'Ana Paula', initials: 'AP', color: '#425a78', time: '3 sem', likes: 12, text: 'Fiz a consulta online porque moro em outra cidade e me senti muito à vontade. O atendimento foi reservado, pontual e sem julgamentos. Gostei bastante.' },
-  { name: 'Sandra Ribeiro', initials: 'SR', color: '#694b2b', time: '1 mês', likes: 24, text: 'O que mais gostei foi a sinceridade. Não ficou prometendo milagre e nem tentando me pressionar. Explicou as possibilidades com clareza e respeitou meu tempo.' },
-  { name: 'Luciana Alves', initials: 'LA', color: '#75658f', time: '1 mês', likes: 9, text: 'Demorei para criar coragem de chamar, mas fui muito bem recebida desde a primeira mensagem. A conversa me ajudou a organizar meus pensamentos e olhar a situação de outra forma.' },
-  { name: 'Carlos Henrique', initials: 'CH', color: '#4e8278', time: '2 meses', likes: 15, text: 'Atendimento direto e muito respeitoso. Tirei minhas dúvidas antes de agendar, recebi todas as informações e o valor certinho. Recomendo pela seriedade.' },
-  { name: 'Beatriz Moreira', initials: 'BM', color: '#9a5e6a', time: '2 meses', likes: 21, text: 'Passando para agradecer pelo acolhimento. Eu estava vivendo uma fase confusa e precisava conversar com alguém que entendesse sem me julgar. Foi muito importante para mim.' },
-];
-
 const testimonialVideos = [
   '/assets/depoimentos/depoimento-1.mp4',
   '/assets/depoimentos/depoimento-2.mp4',
   '/assets/depoimentos/depoimento-3.mp4',
   '/assets/depoimentos/depoimento-4.mp4',
 ];
+
+const VideoTestimonialCard = ({ video, index, onPlay }) => {
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const poster = index % 2 === 0 ? '/assets/pai-julio-sobre-mobile.webp' : '/assets/pai-julio-hero-mobile.webp';
+
+  const startVideo = () => {
+    const player = videoRef.current;
+    if (!player) return;
+    player.play().catch(() => setIsPlaying(false));
+  };
+
+  const handlePlay = (event) => {
+    setIsPlaying(true);
+    onPlay?.(event);
+  };
+
+  return (
+    <article className="video-testimonial-card">
+      <div className={`video-frame ${isPlaying ? 'is-playing' : ''}`}>
+        <video ref={videoRef} className="testimonial-video" src={video} poster={poster} controls playsInline preload="none" onPlay={handlePlay} onPause={() => setIsPlaying(false)} aria-label={`Depoimento em vídeo ${index + 1}`}>Seu navegador não suporta vídeos.</video>
+        {!isPlaying && <button className="video-play" type="button" onClick={startVideo} aria-label={`Reproduzir depoimento em vídeo ${index + 1}`}><span className="video-play-symbol" aria-hidden="true">▶</span><span>Assistir depoimento</span></button>}
+        <span className="video-badge"><span></span> Depoimento {index + 1}</span>
+      </div>
+      <div className="video-card-meta"><strong>Relato de atendimento</strong><small>Experiências individuais podem variar</small></div>
+    </article>
+  );
+};
 
 const sitelinkPages = {
   '/consulta-espiritual/': { type: 'consulta', kicker: 'Consulta espiritual', title: 'Um atendimento reservado para compreender seu momento.', lead: 'Converse com Pai Júlio com privacidade e receba uma orientação individual, 100% online, particular e paga.' },
@@ -84,9 +97,7 @@ const sitelinkPages = {
 };
 
 const SubpageHeader = ({ menuOpen, setMenuOpen }) => (
-  <>
-    <div className="promo-bar" role="status"><Icon name="clock" size={14}/><span><strong>Atenção:</strong> Esta promoção se encerra hoje</span></div>
-    <header className="site-header is-scrolled subpage-header">
+  <header className="site-header is-scrolled subpage-header">
       <a href="/" className="brand"><span className="brand-mark">PJ</span><span><strong>Pai Júlio</strong><small>Orientação espiritual</small></span></a>
       <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="Abrir menu" aria-expanded={menuOpen}><span></span><span></span><span></span></button>
       <nav className={menuOpen ? 'open' : ''} aria-label="Navegação principal">
@@ -97,8 +108,7 @@ const SubpageHeader = ({ menuOpen, setMenuOpen }) => (
         <a href="/perguntas-frequentes/">Dúvidas</a>
         <CTA className="button-small" icon={false}>Agendar agora</CTA>
       </nav>
-    </header>
-  </>
+  </header>
 );
 
 const SubpageFooter = () => (
@@ -141,11 +151,11 @@ function SitelinkPage({ page }) {
 
         {page.type === 'consulta' && <section className="subpage-section section"><div className="container"><div className="section-heading"><span className="kicker">Como funciona</span><h2>Uma conversa simples, individual e confidencial.</h2><p>Você recebe todas as informações com antecedência e só agenda depois de esclarecer suas dúvidas.</p></div><div className="subpage-feature-grid"><article><Icon name="message"/><h3>Primeiro contato</h3><p>Envie uma mensagem e conte brevemente o que está acontecendo.</p></article><article><Icon name="clock"/><h3>Horário combinado</h3><p>Escolha o melhor horário para seu atendimento 100% online.</p></article><article><Icon name="compass"/><h3>Orientação individual</h3><p>Converse com privacidade e receba um direcionamento explicado com clareza.</p></article></div><div className="subpage-info-panel"><div><span className="kicker">O que você encontra</span><h2>Acolhimento sem julgamentos.</h2><ul className="check-list"><li><span><Icon name="check" size={17}/></span>Sigilo e respeito à sua história</li><li><span><Icon name="check" size={17}/></span>Atendimento personalizado</li><li><span><Icon name="check" size={17}/></span>Explicação transparente dos próximos passos</li></ul></div><aside><Icon name="lock" size={28}/><strong>Consulta particular</strong><p>Este não é um serviço gratuito. O atendimento é online e os valores são informados antes do agendamento.</p><CTA>Consultar valores</CTA></aside></div></div></section>}
 
-        {page.type === 'sobre' && <section className="subpage-section section"><div className="container about-grid"><div className="about-visual"><img src="/assets/pai-julio-sobre.webp" srcSet="/assets/pai-julio-sobre-mobile.webp 700w, /assets/pai-julio-sobre.webp 1000w" sizes="(max-width: 720px) calc(100vw - 28px), 55vw" width="1000" height="488" alt="Pai Júlio durante uma cerimônia espiritual"/><div className="experience-card"><strong>30+</strong><span>anos de experiência<br/>e dedicação espiritual</span></div></div><div className="about-copy"><span className="kicker">Uma trajetória de dedicação</span><h2>Escuta, respeito e orientação para cada história.</h2><p>Pai Júlio acolhe pessoas que procuram respostas, proteção e equilíbrio para momentos delicados da vida.</p><p>Cada atendimento considera a história e o momento de quem chega, sem fórmulas prontas e com respeito à fé de cada pessoa.</p><ul className="check-list"><li><span><Icon name="check" size={17}/></span>Conversa reservada e confidencial</li><li><span><Icon name="check" size={17}/></span>Orientação explicada com clareza</li><li><span><Icon name="check" size={17}/></span>Atendimento para todo o Brasil</li></ul><CTA>Agendar uma conversa</CTA></div></div></section>}
+        {page.type === 'sobre' && <section className="subpage-section section"><div className="container about-grid"><div className="about-visual"><img src="/assets/pai-julio-sobre.webp" srcSet="/assets/pai-julio-sobre-mobile.webp 700w, /assets/pai-julio-sobre.webp 1000w" sizes="(max-width: 720px) calc(100vw - 28px), 55vw" width="1000" height="488" loading="lazy" decoding="async" alt="Pai Júlio durante uma cerimônia espiritual"/><div className="experience-card"><strong>30+</strong><span>anos de experiência<br/>e dedicação espiritual</span></div></div><div className="about-copy"><span className="kicker">Uma trajetória de dedicação</span><h2>Escuta, respeito e orientação para cada história.</h2><p>Pai Júlio acolhe pessoas que procuram respostas, proteção e equilíbrio para momentos delicados da vida.</p><p>Cada atendimento considera a história e o momento de quem chega, sem fórmulas prontas e com respeito à fé de cada pessoa.</p><ul className="check-list"><li><span><Icon name="check" size={17}/></span>Conversa reservada e confidencial</li><li><span><Icon name="check" size={17}/></span>Orientação explicada com clareza</li><li><span><Icon name="check" size={17}/></span>Atendimento para todo o Brasil</li></ul><CTA>Agendar uma conversa</CTA></div></div></section>}
 
         {page.type === 'trabalhos' && <section className="services subpage-section section"><div className="container"><div className="section-heading light"><span className="kicker">Atendimentos disponíveis</span><h2>Escolha o tema que mais se aproxima da sua necessidade.</h2><p>Se ainda tiver dúvidas, explique sua situação pelo WhatsApp e receba as informações antes de decidir.</p></div><div className="service-assurance"><div><Icon name="lock" size={18}/><span><strong>Atendimento particular</strong><small>Consulta individual e sigilosa</small></span></div><div><Icon name="message" size={18}/><span><strong>Informação antecipada</strong><small>Valores enviados antes de agendar</small></span></div><div className="paid-alert"><Icon name="lock" size={20}/><span><strong>Atendimento particular e pago</strong><small>Sem cobranças antes da confirmação.</small></span></div></div>{serviceCards}<p className="mobile-scroll-hint">Deslize para conhecer todos os atendimentos <span>→</span></p></div></section>}
 
-        {page.type === 'depoimentos' && <section className="testimonials subpage-section section"><div className="container"><div className="video-testimonials"><div className="video-section-title"><span><Icon name="message" size={17}/></span><div><strong>Depoimentos em vídeo</strong><small>Toque para assistir aos relatos</small></div></div><div className="video-testimonials-grid">{testimonialVideos.map((video, index) => <article className="video-testimonial-card" key={video}><div className="video-frame"><video className="testimonial-video" src={video} poster={index % 2 === 0 ? '/assets/pai-julio-sobre-mobile.webp' : '/assets/pai-julio-hero-mobile.webp'} controls playsInline preload="none" onPlay={handleVideoPlay} aria-label={`Depoimento em vídeo ${index + 1}`}>Seu navegador não suporta vídeos.</video><span className="video-badge"><span></span> Depoimento {index + 1}</span></div><div className="video-card-meta"><strong>Relato de atendimento</strong><small>Toque no vídeo para assistir</small></div></article>)}</div><p className="video-scroll-hint">Deslize para assistir aos outros vídeos <span>→</span></p></div><div className="comments-divider"><span>Comentários escritos</span></div><div className="comments-panel"><div className="comments-toolbar"><div><strong>Comentários</strong><small>Experiências compartilhadas</small></div></div><div className="comments-list">{testimonialComments.slice(0,4).map((comment) => <article className="social-comment" key={comment.name}><span className="comment-avatar" style={{background:comment.color}}>{comment.initials}</span><div className="comment-main"><div className="comment-bubble"><div className="comment-name">{comment.name}<span>✓</span></div><p>{comment.text}</p></div><div className="comment-actions"><button>Curtir</button><span>{comment.time}</span></div></div></article>)}</div><div className="comments-disclaimer"><Icon name="eye" size={15}/><span>Experiências individuais podem variar.</span></div></div></div></section>}
+        {page.type === 'depoimentos' && <section className="testimonials subpage-section section"><div className="container"><div className="section-heading"><span className="kicker">Experiências compartilhadas</span><h2>Depoimentos em vídeo.</h2><p>Assista aos relatos e conheça a experiência de quem já conversou com Pai Júlio.</p></div><div className="video-testimonials"><div className="video-testimonials-grid">{testimonialVideos.map((video, index) => <VideoTestimonialCard key={video} video={video} index={index} onPlay={handleVideoPlay}/>)}</div><p className="video-scroll-hint">Deslize para assistir aos outros vídeos <span>→</span></p></div></div></section>}
 
         {page.type === 'faq' && <section className="faq subpage-section section"><div className="container faq-grid"><div className="faq-intro"><span className="kicker">Informação transparente</span><h2>Suas principais dúvidas, respondidas.</h2><p>Não encontrou sua pergunta? Fale diretamente pelo WhatsApp antes de agendar.</p><CTA className="button-outline">Fazer uma pergunta</CTA></div><div className="faq-list">{faqs.map(([question, answer], i) => <div className={`faq-item ${openFaq === i ? 'active' : ''}`} key={question}><button onClick={() => setOpenFaq(openFaq === i ? -1 : i)} aria-expanded={openFaq === i}><span>{question}</span><b>{openFaq === i ? '−' : '+'}</b></button><div className="faq-answer"><p>{answer}</p></div></div>)}</div></div></section>}
 
@@ -161,22 +171,12 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
   const [scrolled, setScrolled] = useState(false);
-  const [notificationIndex, setNotificationIndex] = useState(0);
-  const [showNotification, setShowNotification] = useState(true);
-  const [showAllComments, setShowAllComments] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setNotificationIndex((current) => (current + 1) % activityNotifications.length);
-    }, 5500);
-    return () => window.clearInterval(timer);
   }, []);
 
   const closeMenu = () => setMenuOpen(false);
@@ -188,9 +188,6 @@ function App() {
 
   return (
     <div className="site-shell">
-      <div className="promo-bar" role="status">
-        <Icon name="clock" size={14}/><span><strong>Atenção:</strong> Esta promoção se encerra hoje</span>
-      </div>
       <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
         <a href="#inicio" className="brand" onClick={closeMenu}>
           <span className="brand-mark">PJ</span>
@@ -202,7 +199,7 @@ function App() {
         <nav className={menuOpen ? 'open' : ''} aria-label="Navegação principal">
           <a href="#sobre" onClick={closeMenu}>Sobre</a>
           <a href="#servicos" onClick={closeMenu}>Atendimentos</a>
-          <a href="#depoimentos" onClick={closeMenu}>Depoimentos</a>
+          <a href="#processo" onClick={closeMenu}>Como funciona</a>
           <a href="#duvidas" onClick={closeMenu}>Dúvidas</a>
           <CTA className="button-small" icon={false}>Falar no WhatsApp</CTA>
         </nav>
@@ -214,11 +211,11 @@ function App() {
           <div className="hero-content container">
             <div className="hero-copy">
               <div className="eyebrow"><span></span> Atendimento 100% online</div>
-              <h1>Encontre <em>clareza</em> para seguir em frente</h1>
-              <p className="hero-lead">Orientação espiritual acolhedora para quem vive dúvidas no amor, conflitos pessoais ou sente que precisa reencontrar o próprio caminho.</p>
+              <h1>Orientação espiritual para o momento que você está vivendo.</h1>
+              <p className="hero-lead">Converse com Pai Júlio com privacidade, explique sua situação e receba um direcionamento individual, com respeito à sua história.</p>
               <div className="hero-actions">
-                <CTA>Quero agendar uma consulta</CTA>
-                <a href="#servicos" className="text-link">Conhecer atendimentos <Icon name="arrow" size={18}/></a>
+                <CTA>Falar com Pai Júlio</CTA>
+                <a href="#processo" className="text-link">Como funciona <Icon name="arrow" size={18}/></a>
               </div>
               <div className="payment-notice">
                 <span><Icon name="lock" size={17}/></span>
@@ -241,20 +238,6 @@ function App() {
           </div>
         </section>
 
-        <section className="pain-section section">
-          <div className="container pain-grid">
-            <div className="section-heading left">
-              <span className="kicker">Talvez você esteja vivendo isso agora</span>
-              <h2>Quando a mente não encontra respostas, o coração pede direção.</h2>
-            </div>
-            <div className="pain-list">
-              <div><span>01</span><p>Uma relação importante se afastou e você não sabe como agir.</p></div>
-              <div><span>02</span><p>As mesmas situações se repetem e parecem bloquear seus caminhos.</p></div>
-              <div><span>03</span><p>Você precisa tomar uma decisão, mas sente medo de escolher errado.</p></div>
-            </div>
-          </div>
-        </section>
-
         <section className="about section" id="sobre">
           <div className="container about-grid">
             <div className="about-visual">
@@ -264,8 +247,8 @@ function App() {
             <div className="about-copy">
               <span className="kicker">Quem vai orientar você</span>
               <h2>Experiência espiritual com escuta, respeito e verdade.</h2>
-              <p>Eu sou <strong>Pai Júlio</strong>. Há mais de 30 anos, acolho pessoas que chegam até mim em busca de respostas, proteção e equilíbrio para momentos delicados da vida.</p>
-              <p>Cada história é única. Por isso, o atendimento é feito com atenção individual, sem fórmulas prontas e com total respeito à sua fé e ao seu momento.</p>
+              <p>Eu sou <strong>Pai Júlio</strong>. Há mais de 30 anos, acolho pessoas em busca de respostas, proteção e equilíbrio para momentos delicados da vida.</p>
+              <p>Cada atendimento é individual, reservado e conduzido com respeito à sua história e à sua fé.</p>
               <ul className="check-list">
                 <li><span><Icon name="check" size={17}/></span>Conversa reservada e confidencial</li>
                 <li><span><Icon name="check" size={17}/></span>Orientação explicada com clareza</li>
@@ -280,16 +263,11 @@ function App() {
           <div className="container">
             <div className="section-heading light">
               <span className="kicker">Atendimentos espirituais</span>
-              <h2>Orientação para o momento que você está vivendo.</h2>
-              <p>Escolha o tema que mais se aproxima da sua necessidade. Durante o primeiro contato, você poderá explicar sua situação com tranquilidade.</p>
+              <h2>Escolha o atendimento mais próximo da sua necessidade.</h2>
+              <p>Explique brevemente o que está vivendo e receba as informações antes de decidir.</p>
             </div>
-            <div className="service-assurance">
-              <div><Icon name="lock" size={18}/><span><strong>Atendimento particular</strong><small>Consulta individual e sigilosa</small></span></div>
-              <div><Icon name="message" size={18}/><span><strong>Antes de agendar</strong><small>Você recebe valores e informações pelo WhatsApp</small></span></div>
-              <div className="paid-alert"><Icon name="lock" size={20}/><span><strong>Atendimento particular e pago</strong><small>Você recebe os valores antes de confirmar o agendamento.</small></span></div>
-            </div>
-            <div className="services-grid">
-              {services.map((service, i) => (
+            <div className="services-grid home-services-grid">
+              {homeServices.map((service, i) => (
                 <article className={`service-card ${service.featured ? 'featured' : ''}`} key={service.title}>
                   <div className="service-media" style={{ backgroundImage: `linear-gradient(180deg, rgba(20,18,14,.08), rgba(20,18,14,.88)), url(${service.image})`, backgroundPosition: service.position }}>
                     <span className="service-tag">{service.tag}</span>
@@ -308,22 +286,23 @@ function App() {
               ))}
             </div>
             <p className="mobile-scroll-hint">Deslize para conhecer todos os atendimentos <span>→</span></p>
-            <div className="services-note"><Icon name="shield" size={20}/><span><strong>Não sabe qual atendimento escolher?</strong> Conte brevemente o que está acontecendo. Sua situação será ouvida com cuidado e você receberá as informações e valores antes de decidir.</span></div>
+            <div className="services-note"><Icon name="lock" size={20}/><span><strong>Atendimento particular e pago.</strong> Valores e condições são informados antes da confirmação.</span></div>
+            <a className="services-more" href="/trabalhos-espirituais/">Ver todos os atendimentos <Icon name="arrow" size={16}/></a>
           </div>
         </section>
 
-        <section className="steps section">
+        <section className="steps section" id="processo">
           <div className="container">
             <div className="section-heading">
-              <span className="kicker">Simples, humano e confidencial</span>
-              <h2>Seu atendimento começa em três passos.</h2>
+              <span className="kicker">Como funciona</span>
+              <h2>Um primeiro contato simples e sem pressão.</h2>
             </div>
             <div className="steps-grid">
               <article><span className="step-index" aria-hidden="true">01</span><Icon name="message" size={28}/><h3>Envie uma mensagem</h3><p>Conte, no seu tempo, o que você está vivendo e o tipo de orientação que busca.</p></article>
               <article><span className="step-index" aria-hidden="true">02</span><Icon name="clock" size={28}/><h3>Escolha o horário</h3><p>Combine um horário para seu atendimento 100% online.</p></article>
               <article><span className="step-index" aria-hidden="true">03</span><Icon name="compass" size={28}/><h3>Receba orientação</h3><p>Tenha uma conversa individual para compreender seu momento e enxergar possibilidades.</p></article>
             </div>
-            <div className="center"><CTA>Dar o primeiro passo</CTA><small>Você receberá todas as informações antes de agendar.</small></div>
+            <div className="center"><CTA>Dar o primeiro passo</CTA><small>Você recebe valores e condições antes de confirmar.</small></div>
           </div>
         </section>
 
@@ -331,68 +310,19 @@ function App() {
           <div className="container">
             <div className="section-heading testimonial-heading">
               <span className="kicker">Experiências compartilhadas</span>
-              <h2>O que as pessoas dizem sobre o atendimento.</h2>
-              <p>Mais do que respostas, cada pessoa procura ser ouvida com atenção, respeito e sinceridade.</p>
+              <h2>Veja como é ser atendido.</h2>
+              <p>Relatos em vídeo sobre acolhimento, clareza e discrição durante a orientação.</p>
             </div>
             <div className="video-testimonials">
-              <div className="video-section-title"><span><Icon name="message" size={17}/></span><div><strong>Depoimentos em vídeo</strong><small>Assista aos relatos enviados após o atendimento</small></div></div>
+              <div className="video-section-title"><span><Icon name="message" size={17}/></span><div><strong>Depoimentos em vídeo</strong><small>Toque para assistir aos relatos</small></div></div>
               <div className="video-testimonials-grid">
-                {testimonialVideos.map((video, index) => (
-                  <article className="video-testimonial-card" key={video}>
-                    <div className="video-frame">
-                      <video className="testimonial-video" src={video} poster={index % 2 === 0 ? '/assets/pai-julio-sobre-mobile.webp' : '/assets/pai-julio-hero-mobile.webp'} controls playsInline preload="none" onPlay={handleVideoPlay} aria-label={`Depoimento em vídeo ${index + 1}`}>Seu navegador não suporta vídeos.</video>
-                      <span className="video-badge"><span></span> Depoimento {index + 1}</span>
-                    </div>
-                    <div className="video-card-meta"><strong>Relato de atendimento</strong><small>Toque no vídeo para assistir</small></div>
-                  </article>
+                {testimonialVideos.slice(0, 3).map((video, index) => (
+                  <VideoTestimonialCard key={video} video={video} index={index} onPlay={handleVideoPlay}/>
                 ))}
               </div>
               <p className="video-scroll-hint">Deslize para assistir aos outros vídeos <span>→</span></p>
             </div>
-            <div className="comments-divider"><span>Comentários escritos</span></div>
-            <div className="comments-panel">
-              <div className="comments-toolbar">
-                <div><strong>{testimonialComments.length} comentários</strong><small>Comentários demonstrativos</small></div>
-                <button><span>Mais relevantes</span><b>⌄</b></button>
-              </div>
-              <div className="comments-list">
-                {testimonialComments.map((comment, index) => (
-                  <article className={`social-comment ${index >= 3 && !showAllComments ? 'comment-mobile-extra' : ''}`} key={comment.name}>
-                    <span className="comment-avatar" style={{ background: comment.color }}>{comment.initials}</span>
-                    <div className="comment-main">
-                      <div className="comment-bubble">
-                        <div className="comment-name">{comment.name}<span title="Perfil verificado">✓</span></div>
-                        <p>{comment.text}</p>
-                        {comment.likes > 14 && <span className="reaction-count"><span>👍</span><span>❤</span>{comment.likes}</span>}
-                      </div>
-                      <div className="comment-actions"><button>Curtir</button><button>Responder</button><span>{comment.time}</span></div>
-                      {comment.reply && (
-                        <div className="comment-reply">
-                          <span className="reply-avatar">PJ</span>
-                          <div><div className="comment-bubble"><div className="comment-name">Pai Júlio <span>✓</span></div><p>{comment.reply}</p></div><div className="comment-actions"><button>Curtir</button><button>Responder</button><span>2 sem</span></div></div>
-                        </div>
-                      )}
-                    </div>
-                  </article>
-                ))}
-              </div>
-              <button className="load-comments" onClick={() => setShowAllComments(!showAllComments)}>{showAllComments ? 'Mostrar menos comentários' : 'Ver mais comentários'}</button>
-              <div className="comments-disclaimer"><Icon name="eye" size={15}/><span><strong>Conteúdo ilustrativo para demonstração visual.</strong> Substitua estes exemplos por avaliações reais antes da publicação. Experiências individuais podem variar.</span></div>
-            </div>
-          </div>
-        </section>
-
-        <section className="conversion section">
-          <div className="container conversion-card">
-            <div>
-              <span className="kicker">Você não precisa continuar carregando essa dúvida</span>
-              <h2>Uma conversa pode ajudar você a enxergar o próximo passo.</h2>
-              <p>Fale diretamente pelo WhatsApp. O primeiro contato é simples, discreto e sem compromisso.</p>
-            </div>
-            <div className="conversion-action">
-              <CTA>Quero falar com Pai Júlio</CTA>
-              <small className="conversion-paid"><Icon name="lock" size={14}/> Atendimento particular e pago • valores informados no WhatsApp</small>
-            </div>
+            <div className="testimonials-footer"><span><Icon name="lock" size={14}/> Atendimento reservado e individual</span><a href="/depoimentos/">Ver todos os depoimentos <Icon name="arrow" size={15}/></a></div>
           </div>
         </section>
 
@@ -420,10 +350,10 @@ function App() {
         <section className="final-cta">
           <div className="final-bg" aria-hidden="true"></div>
           <div className="container final-content">
-            <span className="kicker">Seu novo caminho pode começar hoje</span>
-            <h2>Permita-se buscar a clareza que você merece.</h2>
-            <p>Conte o que está acontecendo e agende sua conversa com Pai Júlio.</p>
-            <CTA>Agendar pelo WhatsApp</CTA>
+            <span className="kicker">Próximo passo</span>
+            <h2>Converse sobre o que você está vivendo.</h2>
+            <p>Envie uma mensagem, tire suas dúvidas e receba as informações do atendimento antes de decidir.</p>
+            <CTA>Falar pelo WhatsApp</CTA>
           </div>
         </section>
       </main>
@@ -442,16 +372,6 @@ function App() {
         <span className="whatsapp-copy"><strong>Fale no WhatsApp</strong><small>{WHATSAPP_DISPLAY} • serviço pago</small></span>
       </a>
 
-      {showNotification && (
-        <aside className="activity-notification" key={notificationIndex} aria-live="polite">
-          <span className="activity-status"><Icon name="check" size={21}/></span>
-          <span className="activity-copy">
-            <strong>{activityNotifications[notificationIndex].name} {activityNotifications[notificationIndex].message}</strong>
-            <small>{activityNotifications[notificationIndex].time} • ambiente de estudo</small>
-          </span>
-          <button onClick={() => setShowNotification(false)} aria-label="Fechar notificação">×</button>
-        </aside>
-      )}
     </div>
   );
 }
